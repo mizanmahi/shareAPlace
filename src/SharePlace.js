@@ -1,10 +1,18 @@
-import { Modal } from './UI/modal'
+import { Modal } from './UI/modal';
+import { Map } from './UI/map';
 class PlaceFinder {
     constructor(){
         const addressForm = document.querySelector('form');
         const locateBtn = document.getElementById('locate-btn');
 
-        locateBtn.addEventListener('click', this.findPlaceHandler);
+        locateBtn.addEventListener('click', this.findPlaceHandler.bind(this));
+    }
+
+    selectPlace(coords){
+        if(this.map){
+            this.map.render()
+        }
+        this.map = new Map(coords);              
     }
 
     findPlaceHandler(){
@@ -14,11 +22,11 @@ class PlaceFinder {
             navigator.geolocation.getCurrentPosition(location => {
                 modal.hide();
                 const position = {
-                    lat: location.coords.latitude + Math.random() * 50,
-                    lon: location.coords.longitude + Math.random() * 50
+                    lat: location.coords.latitude ,
+                    lng: location.coords.longitude
                 }
                 
-                console.log(position)
+                this.selectPlace(position)
 
             }, error => {
                 modal.hide();
