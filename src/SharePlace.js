@@ -1,15 +1,17 @@
 import { Modal } from './UI/modal';
 import { Map } from './UI/map';
+import { coordsFromAddress } from './Utility/coords'
 class PlaceFinder {
     constructor(){
         const addressForm = document.querySelector('form');
         const locateBtn = document.getElementById('locate-btn');
 
         locateBtn.addEventListener('click', this.findPlaceHandler.bind(this));
+        addressForm.addEventListener('submit', this.findAddressHandler.bind(this));
     }
 
     selectPlace(coords){
-        if(this.map){
+        if(this.map){ 
             this.map.render()
         }
         this.map = new Map(coords);              
@@ -37,6 +39,20 @@ class PlaceFinder {
             console.log('Your browser dont have location feautures therefore you need to switch to a more modern browser')
         }
 
+    }
+
+    async findAddressHandler(e){
+        e.preventDefault();
+        const address = e.target.querySelector('input').value;
+        if(!address || address.trim().length === 0){
+            alert('Enter a valid address please');
+            return;
+        }
+        const modal = new Modal('loading-modal-content')
+        modal.show();
+        const coordinates = await coordsFromAddress(address);
+        this.selectPlace(coordinates);
+        modal.hide();
     }
 
 }
