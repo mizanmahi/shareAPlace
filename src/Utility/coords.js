@@ -10,5 +10,8 @@ export async function coordsFromAddress (address){
     // // }
     // console.log(data);
     // const coordinates = data.result[0].geometry.location;
-    return {lat: 47.01, lng: 33.55};
+    return {lat: 157.01, lng: 333.55};
+}
+export function addressFromCoords(coords){
+    return 'Bansree, Dhaka, Bangladesh'
 }

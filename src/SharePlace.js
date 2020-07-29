@@ -1,14 +1,14 @@
 import { Modal } from './UI/modal';
 import { Map } from './UI/map';
-import { coordsFromAddress } from './Utility/coords'
+import { coordsFromAddress, addressFromCoords } from './Utility/coords'
 class PlaceFinder {
     constructor(){
-        const addressForm = document.querySelector('form');
+        this.addressForm = document.querySelector('form');
         const locateBtn = document.getElementById('locate-btn');
         this.sharePlaceBtn = document.getElementById('share-btn');
 
         locateBtn.addEventListener('click', this.findPlaceHandler.bind(this));
-        addressForm.addEventListener('submit', this.findAddressHandler.bind(this));
+        this.addressForm.addEventListener('submit', this.findAddressHandler.bind(this));
     }
 
     selectPlace(coords){
@@ -17,10 +17,16 @@ class PlaceFinder {
         }
         this.map = new Map(coords);
         this.sharePlaceBtn.disabled = false;
+        let address = this.addressForm.querySelector('input').value;
+        if(address.trim().length === 0){
+            address = addressFromCoords(coords);
+        }
         const shareInput = document.getElementById('share-link');
-        shareInput.value = `${location.origin}/my-place?lat=${coords.lat}&lng=${coords.lng}`;
+        shareInput.value = `${location.origin}/my-place?address=${encodeURI(address)}&lat=${coords.lat}&lng=${coords.lng}`;
         this.sharePlaceBtn.addEventListener('click', function(){
-            navigator.clipboard.writeText(shareInput.value).then(m => alert('Link copied!')).catch(err => {
+            shareInput.select();
+            navigator.clipboard.writeText(shareInput.value).then(m => alert('Link copied!'))
+            .catch(err => {
                 console.log(err);
             })
         })              
