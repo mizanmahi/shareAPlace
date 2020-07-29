@@ -5,6 +5,7 @@ class PlaceFinder {
     constructor(){
         const addressForm = document.querySelector('form');
         const locateBtn = document.getElementById('locate-btn');
+        this.sharePlaceBtn = document.getElementById('share-btn');
 
         locateBtn.addEventListener('click', this.findPlaceHandler.bind(this));
         addressForm.addEventListener('submit', this.findAddressHandler.bind(this));
@@ -14,7 +15,15 @@ class PlaceFinder {
         if(this.map){ 
             this.map.render()
         }
-        this.map = new Map(coords);              
+        this.map = new Map(coords);
+        this.sharePlaceBtn.disabled = false;
+        const shareInput = document.getElementById('share-link');
+        shareInput.value = `${location.origin}/my-place?lat=${coords.lat}&lng=${coords.lng}`;
+        this.sharePlaceBtn.addEventListener('click', function(){
+            navigator.clipboard.writeText(shareInput.value).then(m => alert('Link copied!')).catch(err => {
+                console.log(err);
+            })
+        })              
     }
 
     findPlaceHandler(){
